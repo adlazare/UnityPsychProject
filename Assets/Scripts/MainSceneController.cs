@@ -119,7 +119,7 @@ public class MainSceneController : MonoBehaviour {
 	}
 
 	private IEnumerator WaitForPlayerToWalk () {
-		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(10);
 		GoToNextPhase();
 	}
 
