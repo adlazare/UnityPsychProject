@@ -18,12 +18,12 @@ public class Clipboard : MonoBehaviour {
 	void Update () {
 		if (MainSceneController.gamePhase == MainSceneController.GamePhase.HallwayChase){
 			if (!StartedRunningAway) {
-				thisRigidBody.velocity = new Vector3(0, 0, 3);
+				thisRigidBody.velocity = new Vector3(0, 0, 5);
 				thisRigidBody.useGravity = true;
 				StartedRunningAway = true;
 			}
 			if (transform.position.y < 0.19f) {
-				thisRigidBody.velocity = new Vector3(0, 4, 2);
+				thisRigidBody.velocity = new Vector3(0, 4, 2.5f);
 				thisRigidBody.angularVelocity = new Vector3(2, 0, 0);
 			}
 			if (transform.position.z > 30) {

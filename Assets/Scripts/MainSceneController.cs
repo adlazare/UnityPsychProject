@@ -12,10 +12,12 @@ public class MainSceneController : MonoBehaviour {
 	public GameObject SlidingTile;
 	public GameObject Clipboard;
 	public GameObject BackWall;
+	public GameObject MinigameDoor2;
+	private Rigidbody MinigameDoor2RigidBody;
 	private Rigidbody ClipboardRigidBody;
 	public GameObject IntroUI;
 	public GameObject DialogueUI;
-	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor};
+	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle};
 	public static GamePhase gamePhase = GamePhase.StartMenuShowing;
 	public static bool ControlsEnabled = false;
 	public GameObject DialogueText;
@@ -27,6 +29,7 @@ public class MainSceneController : MonoBehaviour {
 		mainSceneController = this;
 		DialogueTextComponent = DialogueText.GetComponent<Text>();
 		ClipboardRigidBody = Clipboard.GetComponent<Rigidbody>();
+		MinigameDoor2RigidBody = MinigameDoor2.GetComponentInChildren<Rigidbody>();
 		int rand = Random.Range(1,4);
 		if (rand == 1) {Kira.SetActive(false); Jeff.SetActive(false); ChosenCharacter = Liam;}
 		if (rand == 2) {Liam.SetActive(false); Jeff.SetActive(false); ChosenCharacter = Kira;}
@@ -110,16 +113,25 @@ public class MainSceneController : MonoBehaviour {
 		case GamePhase.WaitingForPlayer:
 			gamePhase = GamePhase.ClipboardHopToDoor;
 			ControlsEnabled = false;
+			// Unparent camera from character & fix it's position
 			Camera.main.transform.parent = null;
 			Camera.main.transform.position = new Vector3(0, 1, 27);
+			Camera.main.transform.rotation = Quaternion.Euler(0, 0, 0);
+			ChosenCharacter.transform.position = new Vector3(-1f, ChosenCharacter.transform.position.y, 28f);
+			GoToNextPhase();
 			break;
 		case GamePhase.ClipboardHopToDoor:
+			gamePhase = GamePhase.ThreeDoorShuffle;
+			StartCoroutine(MinigameDoor2Open());
+
+			break;
+		case GamePhase.ThreeDoorShuffle:
 			break;
 		}
 	}
 
 	private IEnumerator WaitForPlayerToWalk () {
-		yield return new WaitForSeconds(10);
+		yield return new WaitForSeconds(1);
 		GoToNextPhase();
 	}
 
@@ -160,6 +172,22 @@ public class MainSceneController : MonoBehaviour {
 			yield return new WaitForSeconds(0.016f);
 		}
 
+	}
+
+	private IEnumerator MinigameDoor2Open () {
+		// Open & close MinigameDoor2 Using Lerp
+
+		Quaternion OriginalRotation = MinigameDoor2RigidBody.transform.rotation;
+		Quaternion EndRotation = Quaternion.Euler(0, 120, 0);
+		for (float f = 0f; f < 1f; f += 0.05f){
+			MinigameDoor2RigidBody.transform.rotation = Quaternion.Lerp(OriginalRotation, EndRotation, f);
+			yield return new WaitForSeconds(0.016f);
+		}
+		yield return new WaitForSeconds(1.5f);
+		for (float f = 0f; f < 1f; f += 0.05f){
+			MinigameDoor2RigidBody.transform.rotation = Quaternion.Lerp(EndRotation, OriginalRotation, f);
+			yield return new WaitForSeconds(0.016f);
+		}
 	}
 
 }

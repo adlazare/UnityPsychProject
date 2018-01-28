@@ -2,7 +2,10 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/MainSceneController.cs">
     <Files>
-      <File FileName="Assets/Scripts/MainSceneController.cs" Line="122" Column="37" />
+      <File FileName="Assets/Scripts/MainSceneController.cs" Line="183" Column="52" />
+      <File FileName="Assets/Scripts/Character.cs" Line="52" Column="4" />
+      <File FileName="Assets/Scripts/Clipboard.cs" Line="17" Column="36" />
+      <File FileName="Assets/Scripts/MainDoor.cs" Line="26" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
