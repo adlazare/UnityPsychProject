@@ -41,21 +41,21 @@ public class Clipboard : MonoBehaviour {
 //				thisRigidBody.useGravity = true;
 //				HoppedOutOfMinigameDoor = true;
 			}
-			if (transform.position.y < 5f && HoppedOutOfMinigameDoor == true) {
-				thisRigidBody.velocity = new Vector3(4, 0, 2.5f);
-				thisRigidBody.angularVelocity = new Vector3(2, 0, 0);
-			}
-			if (transform.position.x > 16 && HoppedOutOfMinigameDoor == true) {
-				thisRigidBody.velocity = new Vector3(0, 0, 0);
-				thisRigidBody.angularVelocity = new Vector3(0, 0, 0);
-//				MainSceneController.mainSceneController.GoToNextPhase();
-			}
+//			if (transform.position.y < 5f && HoppedOutOfMinigameDoor == true) {
+//				thisRigidBody.velocity = new Vector3(4, 0, 2.5f);
+//				thisRigidBody.angularVelocity = new Vector3(2, 0, 0);
+//			}
+//			if (transform.position.x > 16 && HoppedOutOfMinigameDoor == true) {
+//				thisRigidBody.velocity = new Vector3(0, 0, 0);
+//				thisRigidBody.angularVelocity = new Vector3(0, 0, 0);
+////				MainSceneController.mainSceneController.GoToNextPhase();
+//			}
 		}
 	}
 
 	private IEnumerator HopOutOfMinigameDoor () {
-		thisRigidBody.velocity = new Vector3(0, 0, -5f);
 		thisRigidBody.useGravity = true;
+		thisRigidBody.velocity = new Vector3(0, 0, -2.5f);
 		yield return new WaitForSeconds(2f);
 		HoppedOutOfMinigameDoor = true;
 		MainSceneController.mainSceneController.GoToNextPhase();

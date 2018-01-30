@@ -51,8 +51,8 @@ public class MainSceneController : MonoBehaviour {
 		if (rand == 3) {Liam.SetActive(false); Kira.SetActive(false); ChosenCharacter = Jeff;}
 
 		// TESTING TESTING TESTING
-		gamePhase = GamePhase.WaitingForPlayer;
-		GoToNextPhase();
+//		gamePhase = GamePhase.WaitingForPlayer;
+//		GoToNextPhase();
 //		Kira.SetActive(false); Jeff.SetActive(false); ChosenCharacter = Liam;
 	}
 	
@@ -185,7 +185,7 @@ public class MainSceneController : MonoBehaviour {
 	}
 
 	private IEnumerator WaitForPlayerToWalk () {
-		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(10);
 		GoToNextPhase();
 	}
 
