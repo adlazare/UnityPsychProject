@@ -51,7 +51,10 @@ public class Character : MonoBehaviour {
 			}
 			break;
 		case MainSceneController.GamePhase.PlayerChoosesDoor:
-
+			break;
+		case MainSceneController.GamePhase.ClipboardSwimsAcrossRiver:
+			CharacterControllerV2.SetFloat("inputV", 0);
+			CharacterControllerV2.SetFloat("inputH", 0);
 			break;
 		}
 

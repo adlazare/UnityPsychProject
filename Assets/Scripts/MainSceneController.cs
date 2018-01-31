@@ -10,7 +10,8 @@ public class MainSceneController : MonoBehaviour {
 	public GameObject Kira, Liam, Jeff;
 	private GameObject ChosenCharacter;
 	public GameObject SlidingTile;
-	public GameObject Clipboard;
+	public GameObject GOClipboard;
+	private Clipboard ClipboardScript;
 	public GameObject BackWall;
 	public GameObject MinigameDoor1;
 	public GameObject MinigameDoor2;
@@ -27,7 +28,7 @@ public class MainSceneController : MonoBehaviour {
 	public GameObject IntroUI;
 	public GameObject DialogueUI;
 	public GameObject Dialogue2UI;
-	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, WaitingForPlayerAtRiverBank};
+	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup};
 	public static GamePhase gamePhase = GamePhase.StartMenuShowing;
 	public static bool ControlsEnabled = false;
 	public GameObject DialogueText; 
@@ -42,16 +43,18 @@ public class MainSceneController : MonoBehaviour {
 		mainSceneController = this;
 		DialogueTextComponent = DialogueText.GetComponent<Text>();
 		Dialogue2TextComponent = Dialogue2Text.GetComponent<Text>();
-		ClipboardRigidBody = Clipboard.GetComponent<Rigidbody>();
+		ClipboardRigidBody = GOClipboard.GetComponent<Rigidbody>();
+		ClipboardScript = GOClipboard.GetComponent<Clipboard>();
 		MinigameDoorsRigidBody = MinigameDoors.GetComponent<Rigidbody>();
 		int rand = Random.Range(1,4);
 		ClipboardDoorNumber = Random.Range(1,4);
+		Debug.Log(ClipboardDoorNumber);
 		if (rand == 1) {Kira.SetActive(false); Jeff.SetActive(false); ChosenCharacter = Liam;}
 		if (rand == 2) {Liam.SetActive(false); Jeff.SetActive(false); ChosenCharacter = Kira;}
 		if (rand == 3) {Liam.SetActive(false); Kira.SetActive(false); ChosenCharacter = Jeff;}
 
 		// TESTING TESTING TESTING
-//		gamePhase = GamePhase.WaitingForPlayer;
+//		gamePhase = GamePhase.ClipboardAppears;
 //		GoToNextPhase();
 //		Kira.SetActive(false); Jeff.SetActive(false); ChosenCharacter = Liam;
 	}
@@ -162,6 +165,7 @@ public class MainSceneController : MonoBehaviour {
 			StartCoroutine(OpenSelectedDoor());
 			break;
 		case GamePhase.ClipboardAppears:
+			IntroUI.SetActive(false);
 			gamePhase = GamePhase.ConcealedDoorsOpenAndClipboardRuns;
 			MinigameDoorsCollider.SetActive(false);
 			Camera.main.transform.position = new Vector3(0, 1, 27);
@@ -173,8 +177,26 @@ public class MainSceneController : MonoBehaviour {
 			ChosenCharacter.transform.rotation = Quaternion.Euler(0, 0, 0);
 			Camera.main.transform.parent = ChosenCharacter.transform;
 			ControlsEnabled = true;
+			StartCoroutine(ClipboardScript.GoToRiver());
 			break;
 		case GamePhase.WaitingForPlayerAtRiverBank:
+			gamePhase = GamePhase.ClipboardSwimsAcrossRiver;
+			ControlsEnabled = false;
+			Camera.main.transform.parent = null;
+			Camera.main.transform.position = new Vector3(20, 5, 31);
+			Camera.main.transform.rotation = Quaternion.Euler(38, 90, 0);
+			ChosenCharacter.transform.position = new Vector3(20, 1.388f, 29.8f);
+			ChosenCharacter.transform.rotation = Quaternion.Euler(0, 90f, 0);
+			StartCoroutine(ClipboardScript.SwimAcrossRiver());
+
+			break;
+		case GamePhase.ClipboardSwimsAcrossRiver:
+			gamePhase = GamePhase.RiverMinigameSetup;
+			Camera.main.transform.position = new Vector3(20.23f, 11.46f, 31);
+			Camera.main.transform.rotation = Quaternion.Euler(56.05f, 90, 0);
+			ChosenCharacter.transform.position = new Vector3(22, 1.388f, 29.8f);
+			break;
+		case GamePhase.RiverMinigameSetup:
 			break;
 		}
 		Debug.Log(gamePhase);
@@ -203,20 +225,20 @@ public class MainSceneController : MonoBehaviour {
 		yield return new WaitForSeconds(1);
 
 		// Move the clipboard to the camera
-		Vector3 OriginalPosition = Clipboard.transform.position;
+		Vector3 OriginalPosition = GOClipboard.transform.position;
 		Vector3 EndPosition = new Vector3(0.292f, 0.856f, -1.55f);
-		Quaternion OriginalRotation = Clipboard.transform.rotation;
+		Quaternion OriginalRotation = GOClipboard.transform.rotation;
 		Quaternion EndRotation = Quaternion.Euler(85.466f, 287.293f, 86.645f);
 		ClipboardRigidBody.useGravity = false;
 		for (float f = 0f; f < 1f; f += 0.05f){
-			Clipboard.transform.position = Vector3.Lerp(OriginalPosition, EndPosition, f);
-			Clipboard.transform.rotation = Quaternion.Lerp(OriginalRotation, EndRotation, f);
+			GOClipboard.transform.position = Vector3.Lerp(OriginalPosition, EndPosition, f);
+			GOClipboard.transform.rotation = Quaternion.Lerp(OriginalRotation, EndRotation, f);
 			yield return new WaitForSeconds(0.016f);
 		}
 		ClipboardRigidBody.velocity = Vector3.zero;
 		ClipboardRigidBody.angularVelocity = Vector3.zero;
-		Clipboard.transform.position = EndPosition;
-		Clipboard.transform.rotation = EndRotation;
+		GOClipboard.transform.position = EndPosition;
+		GOClipboard.transform.rotation = EndRotation;
 		GoToNextPhase();
 	}
 
@@ -244,20 +266,20 @@ public class MainSceneController : MonoBehaviour {
 		}
 		yield return new WaitForSeconds(1.5f);
 
-		Vector3 OriginalPosition = Clipboard.transform.position;
+		Vector3 OriginalPosition = GOClipboard.transform.position;
 		Vector3 EndPosition = new Vector3(0.054f, 0.336f, 32f);
-		Quaternion OriginalClipboardRotation = Clipboard.transform.rotation;
+		Quaternion OriginalClipboardRotation = GOClipboard.transform.rotation;
 		Quaternion EndClipboardRotation = Quaternion.Euler(100f, 267f, 96f);
 		ClipboardRigidBody.useGravity = false;
 		for (float f = 0f; f < 1f; f += 0.05f){
-			Clipboard.transform.position = Vector3.Lerp(OriginalPosition, EndPosition, f);
-			Clipboard.transform.rotation = Quaternion.Lerp(OriginalClipboardRotation, EndClipboardRotation, f);
+			GOClipboard.transform.position = Vector3.Lerp(OriginalPosition, EndPosition, f);
+			GOClipboard.transform.rotation = Quaternion.Lerp(OriginalClipboardRotation, EndClipboardRotation, f);
 			yield return new WaitForSeconds(0.016f);
 		}
 		ClipboardRigidBody.velocity = Vector3.zero;
 		ClipboardRigidBody.angularVelocity = Vector3.zero;
-		Clipboard.transform.position = EndPosition;
-		Clipboard.transform.rotation = EndClipboardRotation;
+		GOClipboard.transform.position = EndPosition;
+		GOClipboard.transform.rotation = EndClipboardRotation;
 
 //		yield return new WaitForSeconds(1f);
 
@@ -266,7 +288,7 @@ public class MainSceneController : MonoBehaviour {
 			yield return new WaitForSeconds(0.016f);
 		}
 		MinigameDoor2.transform.rotation = OriginalRotation;
-		Clipboard.SetActive(false);
+		GOClipboard.SetActive(false);
 		yield return new WaitForSeconds(0.5f);
 
 //		StartCoroutine(SpinDoors());
@@ -348,16 +370,16 @@ public class MainSceneController : MonoBehaviour {
 
 	private IEnumerator OpenSelectedDoor () {
 		if (ClipboardDoorNumber == 1) {
-			Clipboard.transform.position = new Vector3(-1, 0.336f, 32);
-			Clipboard.SetActive(true);
+			GOClipboard.transform.position = new Vector3(-1, 0.336f, 32);
+			GOClipboard.SetActive(true);
 		}
 		else if (ClipboardDoorNumber == 2) {
-			Clipboard.transform.position = new Vector3(0, 0.336f, 32);
-			Clipboard.SetActive(true);
+			GOClipboard.transform.position = new Vector3(0, 0.336f, 32);
+			GOClipboard.SetActive(true);
 		}
 		else if (ClipboardDoorNumber == 3) {
-			Clipboard.transform.position = new Vector3(1, 0.336f, 32);
-			Clipboard.SetActive(true);
+			GOClipboard.transform.position = new Vector3(1, 0.336f, 32);
+			GOClipboard.SetActive(true);
 		}
 
 		if (Character.SelectedDoor == 1) {
@@ -421,7 +443,7 @@ public class MainSceneController : MonoBehaviour {
 		else {
 			Character.DoorTriggered = false;
 			gamePhase = GamePhase.ThreeDoorShuffle;
-			Clipboard.SetActive(false);
+			GOClipboard.SetActive(false);
 			Camera.main.transform.position = new Vector3(0, 1, 27);
 			Camera.main.transform.rotation = Quaternion.Euler(0, 0, 0);
 			GoToNextPhase();
@@ -436,5 +458,6 @@ public class MainSceneController : MonoBehaviour {
 		}
 
 		yield return new WaitForSeconds(2f);
+		GoToNextPhase();
 	}
 }
