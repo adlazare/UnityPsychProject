@@ -28,7 +28,7 @@ public class MainSceneController : MonoBehaviour {
 	public GameObject IntroUI;
 	public GameObject DialogueUI;
 	public GameObject Dialogue2UI;
-	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup};
+	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing};
 	public static GamePhase gamePhase = GamePhase.StartMenuShowing;
 	public static bool ControlsEnabled = false;
 	public GameObject DialogueText; 
@@ -197,6 +197,13 @@ public class MainSceneController : MonoBehaviour {
 			ChosenCharacter.transform.position = new Vector3(22, 1.388f, 29.8f);
 			break;
 		case GamePhase.RiverMinigameSetup:
+			gamePhase = GamePhase.RiverCrossing;
+			Camera.main.transform.position = new Vector3(20.627f, 2.809f, 29.875f);
+			Camera.main.transform.rotation = Quaternion.Euler(26.05f, 90, 0);
+			Camera.main.transform.parent = ChosenCharacter.transform;
+			ControlsEnabled = true;
+			break;
+		case GamePhase.RiverCrossing:
 			break;
 		}
 		Debug.Log(gamePhase);
