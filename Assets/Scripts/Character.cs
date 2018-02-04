@@ -52,11 +52,36 @@ public class Character : MonoBehaviour {
 			break;
 		case MainSceneController.GamePhase.PlayerChoosesDoor:
 			break;
+		case MainSceneController.GamePhase.WaitingForPlayerAtRiverBank:
+			if (transform.position.x > 20) {
+				MainSceneController.mainSceneController.GoToNextPhase();
+			}
+			break;
 		case MainSceneController.GamePhase.ClipboardSwimsAcrossRiver:
 			CharacterControllerV2.SetFloat("inputV", 0);
 			CharacterControllerV2.SetFloat("inputH", 0);
 			break;
+		case MainSceneController.GamePhase.RiverCrossing:
+			if (transform.position.x > 40) {
+				MainSceneController.mainSceneController.GoToNextPhase();
+			}
+			break;
+		case MainSceneController.GamePhase.ClipboardRunsToFireMinigame:
+			if (transform.position.x > 55) {
+				MainSceneController.mainSceneController.GoToNextPhase();
+			}
+			break;
+		case MainSceneController.GamePhase.DialogueInterruptedByFireWall:
+			CharacterControllerV2.SetFloat("inputV", 0);
+			CharacterControllerV2.SetFloat("inputH", 0);
+			break;
+		case MainSceneController.GamePhase.StairsAppear:
+			if (transform.rotation.y < 165) {
+				CharacterControllerV2.SetFloat("inputH", 1);
+			}
+			break;
 		}
+
 
 		if (MainSceneController.ControlsEnabled) {
 			bool isShiftPressed = Input.GetKey("left shift");

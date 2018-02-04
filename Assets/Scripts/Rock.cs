@@ -6,12 +6,10 @@ public class Rock : MonoBehaviour {
 
 	public GameObject Plank;
 	public Vector3 PlankEndPosition;
-	private Renderer thisRenderer;
 	public static bool Plank1Placed, Plank2Placed, Plank3Placed, Plank4Placed, AllPlanksPlaced;
 
 	// Use this for initialization
 	void Start () {
-		thisRenderer = GetComponent<Renderer>();
 		Plank1Placed = false;
 		Plank2Placed = false;
 		Plank3Placed = false;
@@ -29,18 +27,22 @@ public class Rock : MonoBehaviour {
 		if (Plank.name == "Plank1" && Plank1Placed == false) {
 			StartCoroutine(MovePlank());
 			Plank1Placed = true;
+			MainSceneController.mainSceneController.RockParticleSystem1.SetActive(false);
 		}
 		else if (Plank.name == "Plank2" && Plank2Placed == false) {
 			StartCoroutine(MovePlank());
 			Plank2Placed = true;
+			MainSceneController.mainSceneController.RockParticleSystem2.SetActive(false);
 		}
 		else if (Plank.name == "Plank3" && Plank3Placed == false) {
 			StartCoroutine(MovePlank());
 			Plank3Placed = true;
+			MainSceneController.mainSceneController.RockParticleSystem3.SetActive(false);
 		}
 		else if (Plank.name == "Plank4" && Plank4Placed == false) {
 			StartCoroutine(MovePlank());
 			Plank4Placed = true;
+			MainSceneController.mainSceneController.RockParticleSystem4.SetActive(false);
 		}
 
 		if (Plank1Placed == true && Plank2Placed == true && Plank3Placed == true && Plank4Placed == true) {
