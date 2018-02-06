@@ -25,31 +25,43 @@ public class MainSceneController : MonoBehaviour {
 	public GameObject MinigameDoorsCollider;
 	public GameObject DoorParticleSystem1, DoorParticleSystem2, DoorParticleSystem3;
 	public GameObject RockParticleSystem1, RockParticleSystem2, RockParticleSystem3, RockParticleSystem4;
+	public GameObject StairParticleSystem;
 	public GameObject FireWallParticleSystem;
 	private Rigidbody ClipboardRigidBody;
 	private Rigidbody MinigameDoorsRigidBody;
 	public GameObject IntroUI;
+	public GameObject TutorialUI;
 	public GameObject DialogueUI;
-	public GameObject Dialogue2UI;
+	public GameObject TraversalDialogueUI;
+	public GameObject TutorialText;
+	public GameObject DialogueText;
+	public GameObject TraversalDialogueText;
+	public GameObject TutorialButtonText;
+	public GameObject DialogueButton1Text, DialogueButton2Text;
+	public GameObject TraversalDialogueButton1Text, TraversalDialogueButton2Text;
+	private Text TutorialTextComponent;
+	private Text DialogueTextComponent;
+	private Text TraversalDialogueTextComponent;
+	private Text TutorialButtonTextComponent;
+	private Text DialogueButton1TextComponent, DialogueButton2TextComponent;
+	private Text TraversalDialogueButton1TextComponent, TraversalDialogueButton2TextComponent;
 	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear};
 	public static GamePhase gamePhase = GamePhase.StartMenuShowing;
 	public static bool ControlsEnabled = false;
-	public GameObject DialogueText; 
-	public GameObject Dialogue2Text;
-	public GameObject Dialogue2Button1Text, Dialogue2Button2Text;
-	private Text DialogueTextComponent;
-	private Text Dialogue2TextComponent;
-	private Text Dialogue2Button1TextComponent, Dialogue2Button2TextComponent;
 	private static int ClipboardDoorNumber = 0;
 
 
 	// Use this for initialization
 	void Start () {
 		mainSceneController = this;
+		TutorialTextComponent = TutorialText.GetComponent<Text>();
 		DialogueTextComponent = DialogueText.GetComponent<Text>();
-		Dialogue2TextComponent = Dialogue2Text.GetComponent<Text>();
-		Dialogue2Button1TextComponent = Dialogue2Button1Text.GetComponent<Text>();
-		Dialogue2Button2TextComponent = Dialogue2Button2Text.GetComponent<Text>();
+		TraversalDialogueTextComponent = TraversalDialogueText.GetComponent<Text>();
+		TutorialButtonTextComponent = TutorialButtonText.GetComponent<Text>();
+		DialogueButton1TextComponent = DialogueButton1Text.GetComponent<Text>();
+		DialogueButton2TextComponent = DialogueButton2Text.GetComponent<Text>();
+		TraversalDialogueButton1TextComponent = TraversalDialogueButton1Text.GetComponent<Text>();
+		TraversalDialogueButton2TextComponent = TraversalDialogueButton2Text.GetComponent<Text>();
 		ClipboardRigidBody = GOClipboard.GetComponent<Rigidbody>();
 		ClipboardScript = GOClipboard.GetComponent<Clipboard>();
 		MinigameDoorsRigidBody = MinigameDoors.GetComponent<Rigidbody>();
@@ -63,6 +75,7 @@ public class MainSceneController : MonoBehaviour {
 		// TESTING TESTING TESTING
 //		gamePhase = GamePhase.WaitingForPlayer;
 //		gamePhase = GamePhase.ClipboardAppears;
+//		gamePhase = GamePhase.WaitingForPlayerAtFireArea;
 //		GoToNextPhase();
 //		Kira.SetActive(false); Jeff.SetActive(false); ChosenCharacter = Liam;
 	}
@@ -89,10 +102,12 @@ public class MainSceneController : MonoBehaviour {
 			break;
 		case GamePhase.TurnLeft:
 			gamePhase = GamePhase.Tutorial1;
-			DialogueUI.SetActive(true);
+			TutorialUI.SetActive(true);
+			TutorialTextComponent.text = "Tutorial: Use WASD to move Virtual Avatar. Hold shift to run.";
+			TutorialButtonTextComponent.text = "OK";
 			break;
 		case GamePhase.Tutorial1:
-			DialogueUI.SetActive(false);
+			TutorialUI.SetActive(false);
 			ControlsEnabled = true;
 			gamePhase = GamePhase.Tutorial1Walking;
 			StartCoroutine(WaitForPlayerToWalk());
@@ -100,42 +115,56 @@ public class MainSceneController : MonoBehaviour {
 		case GamePhase.Tutorial1Walking:
 			gamePhase = GamePhase.Dialogue1;
 			ControlsEnabled = false;
-			DialogueUI.SetActive(true);
+			TutorialUI.SetActive(true);
 			// Warp the character to center
 			ChosenCharacter.transform.position = new Vector3(0,ChosenCharacter.transform.position.y, 0);
 			ChosenCharacter.transform.rotation = Quaternion.Euler(0, 180, 0);
+			DialogueUI.SetActive(true);
 			DialogueTextComponent.text = "Huh, didn't know I'd be working with a partner. You here for the video game experiment too?";
+			DialogueButton1TextComponent.text = "Yes";
+			DialogueButton2TextComponent.text = "No";
 			break;
 		case GamePhase.Dialogue1:
 			gamePhase = GamePhase.Dialogue2;
+			DialogueUI.SetActive(true);
 			DialogueTextComponent.text = "Will that always happen when I ask you a question?";
+			DialogueButton1TextComponent.text = "Yes";
+			DialogueButton2TextComponent.text = "IDK, maybe?";
 			break;
 		case GamePhase.Dialogue2:
 			gamePhase = GamePhase.Dialogue3;
+			DialogueUI.SetActive(true);
 			DialogueTextComponent.text = "Alright, good to know.";
+			DialogueButton1TextComponent.text = "OK";
+			DialogueButton2TextComponent.text = "Cool";
 			break;
 		case GamePhase.Dialogue3:
 			gamePhase = GamePhase.Dialogue4;
+			DialogueUI.SetActive(true);
 			DialogueTextComponent.text = "What do you think they want us to do?";
+			DialogueButton1TextComponent.text = "Not Sure";
+			DialogueButton2TextComponent.text = "You tell me!";
 			ChosenCharacter.transform.position = new Vector3(0,ChosenCharacter.transform.position.y, 0);
 			ChosenCharacter.transform.rotation = Quaternion.Euler(0, 180, 0);
 			break;
 		case GamePhase.Dialogue4:
 			gamePhase = GamePhase.ClipboardFalling;
 			DialogueUI.SetActive(false);
+			TutorialUI.SetActive(false);
 			StartCoroutine(ClipboardFall());
 			break;
 		case GamePhase.ClipboardFalling:
 			gamePhase = GamePhase.Dialogue5;
-			DialogueUI.SetActive(true);
-			DialogueTextComponent.text = "Clipboard: You can't leave 'til you catch me, guinea pig.";
+			TutorialUI.SetActive(true);
+			TutorialTextComponent.text = "Clipboard: You can't leave 'til you catch me, guinea pig.";
+			TutorialButtonTextComponent.text = "OK";
 			break;
 		case GamePhase.Dialogue5:
 			gamePhase = GamePhase.HallwayChase;
 			ChosenCharacter.transform.rotation = Quaternion.Euler(0, 0, 0);
 			Camera.main.transform.parent = ChosenCharacter.transform;
 			ControlsEnabled = true;
-			DialogueUI.SetActive(false);
+			TutorialUI.SetActive(false);
 			StartCoroutine(BackWallSlideUp());
 			break;
 		case GamePhase.HallwayChase:
@@ -144,7 +173,7 @@ public class MainSceneController : MonoBehaviour {
 		case GamePhase.WaitingForPlayer:
 			gamePhase = GamePhase.ClipboardHopToDoor;
 			IntroUI.SetActive(false);
-			Dialogue2UI.SetActive(false);
+			DialogueUI.SetActive(false);
 			ControlsEnabled = false;
 			// Unparent camera from character & fix it's position
 			Camera.main.transform.parent = null;
@@ -196,7 +225,7 @@ public class MainSceneController : MonoBehaviour {
 			break;
 		case GamePhase.WaitingForPlayerAtRiverBank:
 			gamePhase = GamePhase.ClipboardSwimsAcrossRiver;
-			Dialogue2UI.SetActive(false);
+			DialogueUI.SetActive(false);
 			ControlsEnabled = false;
 			Camera.main.transform.parent = null;
 			Camera.main.transform.position = new Vector3(20, 5, 31);
@@ -244,9 +273,8 @@ public class MainSceneController : MonoBehaviour {
 		case GamePhase.DialogueInterruptedByFireWall:
 			gamePhase = GamePhase.StairsAppear;
 			Camera.main.transform.position = new Vector3(60.933f, 0.761f, 32.146f);
-			Camera.main.transform.rotation = Quaternion.Euler(0f, 135, 0);
-
-
+			Camera.main.transform.rotation = Quaternion.Euler(0f, 122.355f, 0);
+			StairParticleSystem.SetActive(true);
 			break;
 		case GamePhase.StairsAppear:
 			break;
@@ -254,12 +282,13 @@ public class MainSceneController : MonoBehaviour {
 		Debug.Log(gamePhase);
 	}
 
-	public void Dialogue2UIClose() {
-		Dialogue2UI.SetActive(false);
+	public void TraversalDialogueUIClose() {
+		TraversalDialogueUI.SetActive(false);
 	}
 
 	private IEnumerator WaitForPlayerToWalk () {
-		yield return new WaitForSeconds(10);
+		yield return new WaitForSeconds(1);
+//		yield return new WaitForSeconds(10);
 		GoToNextPhase();
 	}
 
@@ -302,8 +331,8 @@ public class MainSceneController : MonoBehaviour {
 
 		yield return new WaitForSeconds(2f);
 
-		Dialogue2UI.SetActive(true);
-		Dialogue2TextComponent.text = "So I'm going to call you Lab Rat, cool?";
+		TraversalDialogueUI.SetActive(true);
+		TraversalDialogueTextComponent.text = "So I'm going to call you Lab Rat, cool?";
 
 	}
 
@@ -519,29 +548,30 @@ public class MainSceneController : MonoBehaviour {
 
 	private IEnumerator DisplayTraversalDialogue2 () {
 		yield return new WaitForSeconds(5f);
-		Dialogue2UI.SetActive(true);
-		Dialogue2TextComponent.text = "So, are you being reimbursed for this?";
-		Dialogue2Button1TextComponent.text = "I think so...";
-		Dialogue2Button2TextComponent.text = "I don't know...";
+		TraversalDialogueUI.SetActive(true);
+		TraversalDialogueTextComponent.text = "So, are you being reimbursed for this?";
+		TraversalDialogueButton1TextComponent.text = "I think so...";
+		TraversalDialogueButton2TextComponent.text = "I don't know...";
 	}
 
 	private IEnumerator DisplayTraversalDialogue3 () {
 		yield return new WaitForSeconds(10f);
-		Dialogue2UI.SetActive(true);
-		Dialogue2TextComponent.text = "Hey Labrat, you think I should ask for more outta the reimbursement?";
-		Dialogue2Button1TextComponent.text = "Definitely Guinea Pig!";
-		Dialogue2Button2TextComponent.text = "But I'm not getting a free lunch...";
+		TraversalDialogueUI.SetActive(true);
+		TraversalDialogueTextComponent.text = "Hey Labrat, you think I should ask for more outta the reimbursement?";
+		TraversalDialogueButton1TextComponent.text = "Definitely Guinea Pig!";
+		TraversalDialogueButton2TextComponent.text = "But I'm not getting a free lunch...";
 	}
 
 	private IEnumerator DisplayDialogueInterruptedByFireWall () {
 		yield return new WaitForSeconds(2f);
-		Dialogue2UI.SetActive(true);
-		Dialogue2TextComponent.text = "Huh, I wonder why the heck it sto-";
-		Dialogue2Button1TextComponent.text = "??";
-		Dialogue2Button2TextComponent.text = "!!";
+		TraversalDialogueUI.SetActive(true);
+		TraversalDialogueTextComponent.text = "Huh, I wonder why the heck it sto-";
+		TraversalDialogueButton1TextComponent.text = "??";
+		TraversalDialogueButton2TextComponent.text = "!!";
 		yield return new WaitForSeconds(2f);
-		Dialogue2UI.SetActive(false);
+		TraversalDialogueUI.SetActive(false);
 		FireWallParticleSystem.SetActive(true);
 		yield return new WaitForSeconds(2f);
+		GoToNextPhase();
 	}
 }

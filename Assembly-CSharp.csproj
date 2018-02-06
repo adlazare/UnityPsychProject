@@ -56,6 +56,7 @@
      <Compile Include="Assets\Scripts\MainDoor.cs" />
      <Compile Include="Assets\Scripts\MainSceneController.cs" />
      <Compile Include="Assets\Scripts\Rock.cs" />
+     <Compile Include="Assets\Scripts\Stairs.cs" />
      <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Simple.shader" />
      <None Include="Assets\Standard Assets\Environment\Water (Basic)\Shaders\FXWaterBasic.shader" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />

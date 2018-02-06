@@ -67,7 +67,7 @@ public class Character : MonoBehaviour {
 			}
 			break;
 		case MainSceneController.GamePhase.ClipboardRunsToFireMinigame:
-			if (transform.position.x > 55) {
+			if (transform.position.x > 60) {
 				MainSceneController.mainSceneController.GoToNextPhase();
 			}
 			break;
@@ -76,8 +76,11 @@ public class Character : MonoBehaviour {
 			CharacterControllerV2.SetFloat("inputH", 0);
 			break;
 		case MainSceneController.GamePhase.StairsAppear:
-			if (transform.rotation.y < 165) {
+			if (transform.rotation.eulerAngles.y < 135) {
 				CharacterControllerV2.SetFloat("inputH", 1);
+			}
+			if (transform.rotation.eulerAngles.y > 135) {
+				CharacterControllerV2.SetFloat("inputH", 0);
 			}
 			break;
 		}

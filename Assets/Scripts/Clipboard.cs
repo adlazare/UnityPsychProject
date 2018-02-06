@@ -99,7 +99,7 @@ public class Clipboard : MonoBehaviour {
 
 		while (transform.position.x < 65f) {
 			if (thisRigidBody.velocity.magnitude < 0.1f) {
-				thisRigidBody.velocity = new Vector3(2.5f, 4, 0);
+				thisRigidBody.velocity = new Vector3(3.5f, 4, 0);
 				thisRigidBody.angularVelocity = new Vector3(0, 0, -4);
 			}
 			yield return new WaitForSeconds(0.016f);
