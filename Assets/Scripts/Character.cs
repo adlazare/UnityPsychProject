@@ -8,12 +8,14 @@ public class Character : MonoBehaviour {
 	Animator CharacterControllerV2;
 	private float inputV;
 	private float inputH;
+	private bool SpacePressed;
 	public static int SelectedDoor = 0;
 	public static bool DoorTriggered = false;
 
 	// Use this for initialization
 	void Start () {
 		CharacterControllerV2 = GetComponent<Animator>();
+		characterRigidBody = GetComponent<Rigidbody>();
 	}
 	
 	// Update is called once per frame
@@ -83,6 +85,16 @@ public class Character : MonoBehaviour {
 				CharacterControllerV2.SetFloat("inputH", 0);
 			}
 			break;
+		case MainSceneController.GamePhase.WaitForPlayerToPushSpace:
+			bool isSpacePressed = Input.GetKey("space");
+			if (isSpacePressed == true) {
+				MainSceneController.mainSceneController.GoToNextPhase();
+			}
+			break;
+		case MainSceneController.GamePhase.CharacterFallsIntoFire:
+			characterRigidBody.freezeRotation = false;
+			break;
+
 		}
 
 

@@ -34,6 +34,7 @@ public class Stairs : MonoBehaviour {
 		}
 		transform.position = EndPosition;
 		transform.rotation = EndRotation;
-		yield return new WaitForSeconds(1f);
+		yield return new WaitForSeconds(2f);
+		MainSceneController.mainSceneController.GoToNextPhase();
 	}
 }
