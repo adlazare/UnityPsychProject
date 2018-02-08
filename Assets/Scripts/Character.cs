@@ -6,11 +6,12 @@ public class Character : MonoBehaviour {
 	
 	public Rigidbody characterRigidBody;
 	Animator CharacterControllerV2;
-	private float inputV;
-	private float inputH;
+	private float v;
+	private float h;
 	private bool SpacePressed;
 	public static int SelectedDoor = 0;
 	public static bool DoorTriggered = false;
+	public static bool RollStarted = false;
 
 	// Use this for initialization
 	void Start () {
@@ -92,7 +93,16 @@ public class Character : MonoBehaviour {
 			}
 			break;
 		case MainSceneController.GamePhase.CharacterFallsIntoFire:
+			CharacterControllerV2.SetFloat("inputV", 1);
 			characterRigidBody.freezeRotation = false;
+			StartCoroutine(WaitForTransition());
+			break;
+		case MainSceneController.GamePhase.CharacterRollsOutOfFire:
+			CharacterControllerV2.SetFloat("inputV", 0);
+			if (RollStarted == false) {
+				StartCoroutine(RollOutOfFire());
+				RollStarted = true;
+			}
 			break;
 
 		}
@@ -102,11 +112,11 @@ public class Character : MonoBehaviour {
 			bool isShiftPressed = Input.GetKey("left shift");
 			CharacterControllerV2.SetBool("ShiftPressed", isShiftPressed);
 
-			inputH = Input.GetAxis ("Horizontal");
-			inputV = Input.GetAxis ("Vertical");
+			float h = Input.GetAxis ("Horizontal");
+			float v = Input.GetAxis ("Vertical");
 
-			CharacterControllerV2.SetFloat("inputH", inputH);
-			CharacterControllerV2.SetFloat("inputV", inputV);
+			CharacterControllerV2.SetFloat("inputH", h);
+			CharacterControllerV2.SetFloat("inputV", v);
 		}
 	}
 
@@ -130,5 +140,28 @@ public class Character : MonoBehaviour {
 		yield return new WaitForSeconds(1);
 		CharacterControllerV2.SetFloat("inputH", 0);	
 		MainSceneController.mainSceneController.GoToNextPhase();
+	}
+
+	private IEnumerator WaitForTransition () {
+		yield return new WaitForSeconds(3f);
+		transform.position = new Vector3(65.449f, -0.122f, 30.878f);
+		transform.rotation = Quaternion.Euler(0, 90, 90);
+		MainSceneController.mainSceneController.GoToNextPhase();
+	}
+
+	private IEnumerator RollOutOfFire () {
+		Vector3 StartPosition = transform.position;
+		Vector3 EndPosition = new Vector3(66.449f, -0.122f, 30.878f);
+//		Quaternion StartRotation = transform.rotation;
+//		Quaternion EndRotation = ''
+		characterRigidBody.angularVelocity = new Vector3(3, 0, 0);
+		for (float f = 0f; f < 1f; f += 0.025f){
+			transform.position = Vector3.Lerp(StartPosition, EndPosition, f);
+			yield return new WaitForSeconds(0.016f);
+		}
+		transform.position = EndPosition;
+		characterRigidBody.angularVelocity = Vector3.zero;
+
+
 	}
 }

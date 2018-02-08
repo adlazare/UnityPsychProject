@@ -45,7 +45,7 @@ public class MainSceneController : MonoBehaviour {
 	private Text TutorialButtonTextComponent;
 	private Text DialogueButton1TextComponent, DialogueButton2TextComponent;
 	private Text TraversalDialogueButton1TextComponent, TraversalDialogueButton2TextComponent;
-	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire};
+	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterRollsOutOfFire};
 	public static GamePhase gamePhase = GamePhase.StartMenuShowing;
 	public static bool ControlsEnabled = false;
 	private static int ClipboardDoorNumber = 0;
@@ -75,8 +75,8 @@ public class MainSceneController : MonoBehaviour {
 		// TESTING TESTING TESTING
 //		gamePhase = GamePhase.WaitingForPlayer;
 //		gamePhase = GamePhase.ClipboardAppears;
-		gamePhase = GamePhase.WaitingForPlayerAtFireArea;
-		GoToNextPhase();
+//		gamePhase = GamePhase.WaitingForPlayerAtFireArea;
+//		GoToNextPhase();
 //		Kira.SetActive(false); Jeff.SetActive(false); ChosenCharacter = Liam;
 	}
 	
@@ -295,7 +295,7 @@ public class MainSceneController : MonoBehaviour {
 			break;
 		case GamePhase.StairDialogue2:
 			gamePhase = GamePhase.StairDialogue3;
-			StartCoroutine("DialogueInterruptedByCharacter");
+			StartCoroutine(DialogueInterruptedByCharacter());
 			break;
 		case GamePhase.StairDialogue3:
 			gamePhase = GamePhase.CharacterOnStairs;
@@ -317,6 +317,9 @@ public class MainSceneController : MonoBehaviour {
 			gamePhase = GamePhase.CharacterFallsIntoFire;
 			break;
 		case GamePhase.CharacterFallsIntoFire:
+			gamePhase = GamePhase.CharacterRollsOutOfFire;
+			break;
+		case GamePhase.CharacterRollsOutOfFire:
 			break;
 		}
 		Debug.Log(gamePhase);
