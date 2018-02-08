@@ -97,11 +97,15 @@ public class Character : MonoBehaviour {
 			characterRigidBody.freezeRotation = false;
 			StartCoroutine(WaitForTransition());
 			break;
-		case MainSceneController.GamePhase.CharacterRollsOutOfFire:
+		case MainSceneController.GamePhase.CharacterExitsFire:
 			CharacterControllerV2.SetFloat("inputV", 0);
-			if (RollStarted == false) {
-				StartCoroutine(RollOutOfFire());
-				RollStarted = true;
+			if (transform.position.x < 68) {
+				CharacterControllerV2.SetBool("ShiftPressed", true);
+				CharacterControllerV2.SetFloat("inputV", 1);
+			}
+			if (transform.position.x > 68) {
+				CharacterControllerV2.SetBool("ShiftPressed", false);
+				CharacterControllerV2.SetFloat("inputV", 0);
 			}
 			break;
 
@@ -144,24 +148,7 @@ public class Character : MonoBehaviour {
 
 	private IEnumerator WaitForTransition () {
 		yield return new WaitForSeconds(3f);
-		transform.position = new Vector3(65.449f, -0.122f, 30.878f);
-		transform.rotation = Quaternion.Euler(0, 90, 90);
+		characterRigidBody.freezeRotation = true;
 		MainSceneController.mainSceneController.GoToNextPhase();
-	}
-
-	private IEnumerator RollOutOfFire () {
-		Vector3 StartPosition = transform.position;
-		Vector3 EndPosition = new Vector3(66.449f, -0.122f, 30.878f);
-//		Quaternion StartRotation = transform.rotation;
-//		Quaternion EndRotation = ''
-		characterRigidBody.angularVelocity = new Vector3(3, 0, 0);
-		for (float f = 0f; f < 1f; f += 0.025f){
-			transform.position = Vector3.Lerp(StartPosition, EndPosition, f);
-			yield return new WaitForSeconds(0.016f);
-		}
-		transform.position = EndPosition;
-		characterRigidBody.angularVelocity = Vector3.zero;
-
-
 	}
 }

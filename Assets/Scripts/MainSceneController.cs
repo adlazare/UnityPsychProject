@@ -27,6 +27,7 @@ public class MainSceneController : MonoBehaviour {
 	public GameObject RockParticleSystem1, RockParticleSystem2, RockParticleSystem3, RockParticleSystem4;
 	public GameObject StairParticleSystem;
 	public GameObject FireWallParticleSystem;
+	public GameObject FireAreaBackWall;
 	private Rigidbody ClipboardRigidBody;
 	private Rigidbody MinigameDoorsRigidBody;
 	public GameObject IntroUI;
@@ -45,7 +46,7 @@ public class MainSceneController : MonoBehaviour {
 	private Text TutorialButtonTextComponent;
 	private Text DialogueButton1TextComponent, DialogueButton2TextComponent;
 	private Text TraversalDialogueButton1TextComponent, TraversalDialogueButton2TextComponent;
-	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterRollsOutOfFire};
+	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterExitsFire, CharacterScoldsPlayer};
 	public static GamePhase gamePhase = GamePhase.StartMenuShowing;
 	public static bool ControlsEnabled = false;
 	private static int ClipboardDoorNumber = 0;
@@ -73,10 +74,11 @@ public class MainSceneController : MonoBehaviour {
 		if (rand == 3) {Liam.SetActive(false); Kira.SetActive(false); ChosenCharacter = Jeff;}
 
 		// TESTING TESTING TESTING
+//		gamePhase = GamePhase.Tutorial1;
 //		gamePhase = GamePhase.WaitingForPlayer;
 //		gamePhase = GamePhase.ClipboardAppears;
-//		gamePhase = GamePhase.WaitingForPlayerAtFireArea;
-//		GoToNextPhase();
+		gamePhase = GamePhase.WaitingForPlayerAtFireArea;
+		GoToNextPhase();
 //		Kira.SetActive(false); Jeff.SetActive(false); ChosenCharacter = Liam;
 	}
 	
@@ -107,9 +109,10 @@ public class MainSceneController : MonoBehaviour {
 			TutorialButtonTextComponent.text = "OK";
 			break;
 		case GamePhase.Tutorial1:
+			gamePhase = GamePhase.Tutorial1Walking;
+			IntroUI.SetActive(false);
 			TutorialUI.SetActive(false);
 			ControlsEnabled = true;
-			gamePhase = GamePhase.Tutorial1Walking;
 			StartCoroutine(WaitForPlayerToWalk());
 			break;
 		case GamePhase.Tutorial1Walking:
@@ -312,14 +315,26 @@ public class MainSceneController : MonoBehaviour {
 			DialogueUI.SetActive(false);
 			gamePhase = GamePhase.WaitForPlayerToPushSpace;
 			// Waiting for player to push space
+			FireAreaBackWall.SetActive(true);
 			break;
 		case GamePhase.WaitForPlayerToPushSpace:
 			gamePhase = GamePhase.CharacterFallsIntoFire;
 			break;
 		case GamePhase.CharacterFallsIntoFire:
-			gamePhase = GamePhase.CharacterRollsOutOfFire;
+			gamePhase = GamePhase.CharacterExitsFire;
+			Camera.main.transform.position = new Vector3(70.75f, 2.12f, 31.25f);
+			Camera.main.transform.rotation = Quaternion.Euler(30.379f, 270, 0);
+			ChosenCharacter.transform.position = new Vector3(65.48f, -0.122f, 31.25f);
+			ChosenCharacter.transform.rotation = Quaternion.Euler(0, 90, 0);
 			break;
-		case GamePhase.CharacterRollsOutOfFire:
+		case GamePhase.CharacterExitsFire:
+			gamePhase = GamePhase.CharacterScoldsPlayer;
+			DialogueUI.SetActive(true);
+			DialogueTextComponent.text = "WHAT ON EARTH! I SAID NO FUNNY BUSINESS!";
+			DialogueButton1TextComponent.text = "I pressed space I swear!";
+			DialogueButton2TextComponent.text = "Well..uh..technically I did get you across..";
+			break;
+		case GamePhase.CharacterScoldsPlayer:
 			break;
 		}
 		Debug.Log(gamePhase);
@@ -330,9 +345,13 @@ public class MainSceneController : MonoBehaviour {
 	}
 
 	private IEnumerator WaitForPlayerToWalk () {
-		yield return new WaitForSeconds(1);
-//		yield return new WaitForSeconds(10);
+//		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(10);
 		GoToNextPhase();
+		// TESTING TESTING TESTING
+//		ChosenCharacter.transform.position = new Vector3(-10, 0, 0);
+//		Camera.main.transform.position = new Vector3(-10, 1, -2);
+//		yield return new WaitForSeconds(1);
 	}
 
 	private IEnumerator ClipboardFall () {
