@@ -40,13 +40,14 @@ public class MainSceneController : MonoBehaviour {
 	public GameObject TutorialButtonText;
 	public GameObject DialogueButton1Text, DialogueButton2Text;
 	public GameObject TraversalDialogueButton1Text, TraversalDialogueButton2Text;
+	public GameObject DialogueButton1, DialogueButton2;
 	private Text TutorialTextComponent;
 	private Text DialogueTextComponent;
 	private Text TraversalDialogueTextComponent;
 	private Text TutorialButtonTextComponent;
 	private Text DialogueButton1TextComponent, DialogueButton2TextComponent;
 	private Text TraversalDialogueButton1TextComponent, TraversalDialogueButton2TextComponent;
-	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterExitsFire, CharacterScoldsPlayer};
+	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterExitsFire, CharacterScoldsPlayer, FireDialogue1, FireDialogue2, FireDialogue3, FireDialogue4, FireDialogue5, FireDialogue6};
 	public static GamePhase gamePhase = GamePhase.StartMenuShowing;
 	public static bool ControlsEnabled = false;
 	private static int ClipboardDoorNumber = 0;
@@ -335,6 +336,47 @@ public class MainSceneController : MonoBehaviour {
 			DialogueButton2TextComponent.text = "Well..uh..technically I did get you across..";
 			break;
 		case GamePhase.CharacterScoldsPlayer:
+			gamePhase = GamePhase.FireDialogue1;
+			DialogueUI.SetActive(true);
+			DialogueTextComponent.text = "...";
+			DialogueButton1TextComponent.text = "[Ask Guinea Pig if they are okay]";
+			DialogueButton2TextComponent.text = "[They look okay]";
+			// Need to figure out how to tell which button was clicked to do branching dialogue here
+			break;
+		case GamePhase.FireDialogue1:
+			gamePhase = GamePhase.FireDialogue2;
+			DialogueUI.SetActive(true);
+			DialogueTextComponent.text = "Thanks for clicking that, I'm not doing so good.";
+			DialogueButton1TextComponent.text = "Aw";
+			DialogueButton2TextComponent.text = "Great!";
+			break;
+		case GamePhase.FireDialogue2:
+			gamePhase = GamePhase.FireDialogue3;
+			DialogueUI.SetActive(true);
+			DialogueTextComponent.text = "The Clipboard can wait, let's find some medical supplies.";
+			DialogueButton1TextComponent.text = "Sounds like a plan.";
+			DialogueButton2TextComponent.text = "Roger that.";
+			break;
+		case GamePhase.FireDialogue3:
+			gamePhase = GamePhase.FireDialogue4;
+			DialogueUI.SetActive(true);
+			DialogueTextComponent.text = "...";
+			DialogueButton1TextComponent.text = "Hey, want to hear a joke Guinea Pig?";
+			DialogueButton2TextComponent.text = "-";
+			break;
+		case GamePhase.FireDialogue4:
+			gamePhase = GamePhase.FireDialogue5;
+			DialogueUI.SetActive(true);
+			DialogueTextComponent.text = "...";
+			DialogueButton1TextComponent.text = "This was a triumph. I'm making a note here - 'Huge Success'.";
+			DialogueButton2TextComponent.text = "How did Abe Lincoln win his court case? Because he's in-a-cent.";
+			break;
+		case GamePhase.FireDialogue5:
+			gamePhase = GamePhase.FireDialogue6;
+			DialogueUI.SetActive(true);
+			DialogueTextComponent.text = "I'm in even more pain now.";
+			DialogueButton1TextComponent.text = "...";
+			DialogueButton2TextComponent.text = "...";
 			break;
 		}
 		Debug.Log(gamePhase);

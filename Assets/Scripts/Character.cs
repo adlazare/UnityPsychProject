@@ -12,6 +12,9 @@ public class Character : MonoBehaviour {
 	public static int SelectedDoor = 0;
 	public static bool DoorTriggered = false;
 	public static bool RollStarted = false;
+	public static bool transitionFlag = false;
+	public static bool transitionFlag2 = false;
+
 
 	// Use this for initialization
 	void Start () {
@@ -95,7 +98,10 @@ public class Character : MonoBehaviour {
 		case MainSceneController.GamePhase.CharacterFallsIntoFire:
 			CharacterControllerV2.SetFloat("inputV", 1);
 			characterRigidBody.freezeRotation = false;
-			StartCoroutine(WaitForTransition());
+			if (transitionFlag == false) {
+				StartCoroutine(WaitForTransition());
+				transitionFlag = true;
+			}
 			break;
 		case MainSceneController.GamePhase.CharacterExitsFire:
 			CharacterControllerV2.SetFloat("inputV", 0);
@@ -106,6 +112,10 @@ public class Character : MonoBehaviour {
 			if (transform.position.x > 68) {
 				CharacterControllerV2.SetBool("ShiftPressed", false);
 				CharacterControllerV2.SetFloat("inputV", 0);
+				if (transitionFlag2 == false) {
+					StartCoroutine(TransitionPhase());
+					transitionFlag2 = true;
+				}
 			}
 			break;
 
@@ -149,6 +159,11 @@ public class Character : MonoBehaviour {
 	private IEnumerator WaitForTransition () {
 		yield return new WaitForSeconds(3f);
 		characterRigidBody.freezeRotation = true;
+		MainSceneController.mainSceneController.GoToNextPhase();
+	}
+
+	private IEnumerator TransitionPhase () {
+		yield return new WaitForSeconds(2f);
 		MainSceneController.mainSceneController.GoToNextPhase();
 	}
 }
