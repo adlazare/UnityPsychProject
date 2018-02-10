@@ -118,7 +118,11 @@ public class Character : MonoBehaviour {
 				}
 			}
 			break;
-
+		case MainSceneController.GamePhase.TransitionToNextHallway:
+			if (transform.position.x > 91) {
+				MainSceneController.mainSceneController.GoToNextPhase();
+			}
+			break;
 		}
 
 

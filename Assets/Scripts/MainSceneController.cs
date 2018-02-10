@@ -28,6 +28,7 @@ public class MainSceneController : MonoBehaviour {
 	public GameObject StairParticleSystem;
 	public GameObject FireWallParticleSystem;
 	public GameObject FireAreaBackWall;
+	public GameObject FireAreaTransitionWall;
 	private Rigidbody ClipboardRigidBody;
 	private Rigidbody MinigameDoorsRigidBody;
 	public GameObject IntroUI;
@@ -47,7 +48,7 @@ public class MainSceneController : MonoBehaviour {
 	private Text TutorialButtonTextComponent;
 	private Text DialogueButton1TextComponent, DialogueButton2TextComponent;
 	private Text TraversalDialogueButton1TextComponent, TraversalDialogueButton2TextComponent;
-	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterExitsFire, CharacterScoldsPlayer, FireDialogue1, FireDialogue2, FireDialogue3, FireDialogue4, FireDialogue5, FireDialogue6};
+	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterExitsFire, CharacterScoldsPlayer, FireDialogue1, FireDialogue2, FireDialogue3, FireDialogue4, FireDialogue5, FireDialogue6, TransitionToNextHallway, TilesFallOutOfCeiling};
 	public static GamePhase gamePhase = GamePhase.StartMenuShowing;
 	public static bool ControlsEnabled = false;
 	private static int ClipboardDoorNumber = 0;
@@ -378,6 +379,24 @@ public class MainSceneController : MonoBehaviour {
 			DialogueButton1TextComponent.text = "...";
 			DialogueButton2TextComponent.text = "...";
 			break;
+		case GamePhase.FireDialogue6:
+			gamePhase = GamePhase.TransitionToNextHallway;
+			DialogueUI.SetActive(false);
+			FireWallParticleSystem.SetActive(false);
+			StartCoroutine(FireAreaTransitionWallOpens());
+			ChosenCharacter.transform.position = new Vector3(69.09f, -0.122f, 31.25f);
+			ChosenCharacter.transform.rotation = Quaternion.Euler(0, 90, 0);
+			Camera.main.transform.position = new Vector3(67.75f, 1.12f, 31.25f);
+			Camera.main.transform.rotation = Quaternion.Euler(11.261f, 90, 0);
+			Camera.main.transform.parent = ChosenCharacter.transform;
+			ControlsEnabled = true;
+			break;
+		case GamePhase.TransitionToNextHallway:
+			gamePhase = GamePhase.TilesFallOutOfCeiling;
+			// Wait for Player to enter medical room
+			break;
+		case GamePhase.TilesFallOutOfCeiling:
+			break;
 		}
 		Debug.Log(gamePhase);
 	}
@@ -697,5 +716,13 @@ public class MainSceneController : MonoBehaviour {
 		TraversalDialogueButton2TextComponent.text = "...";
 		yield return new WaitForSeconds(3f);
 		GoToNextPhase();
+	}
+
+	private IEnumerator FireAreaTransitionWallOpens () {
+		yield return new WaitForSeconds(2f);
+		for (int i = 0; i < 90; i++) {
+			FireAreaTransitionWall.transform.position = FireAreaTransitionWall.transform.position + new Vector3(0, 0.05f, 0);
+			yield return new WaitForSeconds(0.016f);
+		}
 	}
 }
