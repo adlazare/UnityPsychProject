@@ -7,8 +7,8 @@ public class MemoryMatchTile : MonoBehaviour {
 	private Rigidbody thisRigidBody;
 	private BoxCollider thisBoxCollider;
 	private GameObject PreviousTile;
-	public ParticleSystem DissolveParticleSystem;
-	private GameObject Tile1ParticleSystem;
+	public GameObject DissolveParticleSystem;
+	public GameObject Tile1ParticleSystem;
 	public Vector3 TileEndPosition;
 	public static int ClickNum = 1;
 	public static int MatchCount = 0;
@@ -17,6 +17,7 @@ public class MemoryMatchTile : MonoBehaviour {
 	public static string Tile1Name = "";
 	public static string Tile2Name = "";
 	public static string Tile1ParticleSystemName = "";
+	public static bool flag1 = false;
 
 	// Use this for initialization
 	void Start () {
@@ -50,15 +51,16 @@ public class MemoryMatchTile : MonoBehaviour {
 			Tile2Type = transform.GetChild(0).name;
 			Tile2Name = name;
 			PreviousTile = GameObject.Find(Tile1Name);
-			Tile1ParticleSystem = GameObject.Find(Tile1ParticleSystemName);
+//			Tile1ParticleSystem = GameObject.Find(Tile1ParticleSystemName);
 			Debug.Log(Tile1Type + "---" + Tile2Type);
 			Debug.Log(Tile1Name + "---" + Tile2Name);
+//			Debug.Log(Tile1ParticleSystemName);
 			StartCoroutine(FlipTile2());
 		}
 	}
 
 	private IEnumerator MoveTilesIntoPosition() {
-		yield return new WaitForSeconds(3f);
+		yield return new WaitForSeconds(2f);
 		thisRigidBody.useGravity = false;
 		Vector3 TileStartPosition = transform.position;
 		for (float f = 0f; f < 1f; f += 0.05f){
@@ -68,7 +70,10 @@ public class MemoryMatchTile : MonoBehaviour {
 		yield return new WaitForSeconds(2f);
 		thisRigidBody.useGravity = true;
 		thisRigidBody.isKinematic = true;
-		MainSceneController.mainSceneController.GoToNextPhase();
+		if (flag1 == false) {
+			MainSceneController.mainSceneController.GoToNextPhase();
+			flag1 = true;
+		}
 	}
 
 	private IEnumerator FlipTile () {
@@ -94,8 +99,8 @@ public class MemoryMatchTile : MonoBehaviour {
 
 		if (Tile1Type == Tile2Type) {
 			MatchCount += 1;
-			DissolveParticleSystem.Play();
 			Tile1ParticleSystem.SetActive(true);
+			DissolveParticleSystem.SetActive(true);
 			yield return new WaitForSeconds(1f);
 			transform.gameObject.SetActive(false);
 			PreviousTile.SetActive(false);

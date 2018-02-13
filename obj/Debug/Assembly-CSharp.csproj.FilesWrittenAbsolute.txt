@@ -52,3 +52,5 @@
 /Users/alex/Documents/PsychProject/Temp/bin/Debug/Unity.CecilTools.dll
 /Users/alex/Documents/PsychProject/Temp/bin/Debug/Unity.Cecil.Pdb.dll
 /Users/alex/Documents/PsychProject/Temp/bin/Debug/Unity.Cecil.Mdb.dll
+/Users/alex/Documents/PsychProject/Temp/bin/Debug/Assembly-CSharp.dll.mdb
+/Users/alex/Documents/PsychProject/Temp/bin/Debug/Assembly-CSharp.dll

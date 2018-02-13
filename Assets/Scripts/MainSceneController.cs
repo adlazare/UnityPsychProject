@@ -29,6 +29,8 @@ public class MainSceneController : MonoBehaviour {
 	public GameObject FireWallParticleSystem;
 	public GameObject FireAreaBackWall;
 	public GameObject FireAreaTransitionWall;
+	public GameObject GuardRail;
+	public GameObject SlidingStairway;
 	private Rigidbody ClipboardRigidBody;
 	private Rigidbody MinigameDoorsRigidBody;
 	public GameObject IntroUI;
@@ -48,7 +50,7 @@ public class MainSceneController : MonoBehaviour {
 	private Text TutorialButtonTextComponent;
 	private Text DialogueButton1TextComponent, DialogueButton2TextComponent;
 	private Text TraversalDialogueButton1TextComponent, TraversalDialogueButton2TextComponent;
-	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterExitsFire, CharacterScoldsPlayer, FireDialogue1, FireDialogue2, FireDialogue3, FireDialogue4, FireDialogue5, FireDialogue6, TransitionToNextHallway, TilesFallOutOfCeiling, MemoryMatchMinigame};
+	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterExitsFire, CharacterScoldsPlayer, FireDialogue1, FireDialogue2, FireDialogue3, FireDialogue4, FireDialogue5, FireDialogue6, TransitionToNextHallway, TilesFallOutOfCeiling, MemoryMatchMinigame, PlayerGetsFirstAidKit};
 	public static GamePhase gamePhase = GamePhase.StartMenuShowing;
 	public static bool ControlsEnabled = false;
 	private static int ClipboardDoorNumber = 0;
@@ -411,7 +413,17 @@ public class MainSceneController : MonoBehaviour {
 			Camera.main.transform.rotation = Quaternion.Euler(90, 90, 0);
 			break;
 		case GamePhase.MemoryMatchMinigame:
-			
+			gamePhase = GamePhase.PlayerGetsFirstAidKit;
+			ChosenCharacter.transform.position = new Vector3(91.74f, -0.23f, 31.157f);
+			ChosenCharacter.transform.rotation = Quaternion.Euler(0, 90, 0);
+			Camera.main.transform.position = new Vector3(90.34f, 0.8f, 31.157f);
+			Camera.main.transform.rotation = Quaternion.Euler(15, 90, 0);
+			Camera.main.transform.parent = ChosenCharacter.transform;
+			StartCoroutine(LowerGuardRail());
+			ControlsEnabled = true;
+			break;
+		case GamePhase.PlayerGetsFirstAidKit:
+
 			break;
 		}
 		Debug.Log(gamePhase);
@@ -740,5 +752,22 @@ public class MainSceneController : MonoBehaviour {
 			FireAreaTransitionWall.transform.position = FireAreaTransitionWall.transform.position + new Vector3(0, 0.05f, 0);
 			yield return new WaitForSeconds(0.016f);
 		}
+	}
+
+	private IEnumerator LowerGuardRail () {
+		yield return new WaitForSeconds(2f);
+		for (int i = 0; i < 30; i++) {
+			GuardRail.transform.position = GuardRail.transform.position + new Vector3(0, -0.05f, 0);
+			yield return new WaitForSeconds(0.016f);
+		}
+		yield return new WaitForSeconds(1f);
+		Vector3 StartPosition = SlidingStairway.transform.position;
+		Vector3 EndPosition = new Vector3(94.048f, -1.22f, 31.17f);
+		for (float f = 0f; f < 1f; f += 0.05f){
+			SlidingStairway.transform.position = Vector3.Lerp(StartPosition, EndPosition, f);
+			yield return new WaitForSeconds(0.016f);
+		}
+		SlidingStairway.transform.position = EndPosition;
+		yield return new WaitForSeconds(2f);
 	}
 }
