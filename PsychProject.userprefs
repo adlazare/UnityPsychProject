@@ -2,13 +2,8 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/MemoryMatchTile.cs">
     <Files>
-      <File FileName="Assets/Scripts/MainSceneController.cs" Line="397" Column="10" />
-      <File FileName="Assets/Scripts/MainDoor.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Rock.cs" Line="55" Column="1" />
-      <File FileName="Assets/Scripts/Stairs.cs" Line="31" Column="29" />
-      <File FileName="Assets/Scripts/Character.cs" Line="125" Column="10" />
-      <File FileName="Assets/Scripts/Clipboard.cs" Line="14" Column="1" />
-      <File FileName="Assets/Scripts/MemoryMatchTile.cs" Line="31" Column="36" />
+      <File FileName="Assets/Scripts/MainSceneController.cs" Line="67" Column="54" />
+      <File FileName="Assets/Scripts/MemoryMatchTile.cs" Line="46" Column="31" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

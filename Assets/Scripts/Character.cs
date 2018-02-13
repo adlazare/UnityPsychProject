@@ -14,6 +14,8 @@ public class Character : MonoBehaviour {
 	public static bool RollStarted = false;
 	public static bool transitionFlag = false;
 	public static bool transitionFlag2 = false;
+	public static bool transitionFlag3 = false;
+
 
 
 	// Use this for initialization
@@ -120,7 +122,12 @@ public class Character : MonoBehaviour {
 			break;
 		case MainSceneController.GamePhase.TransitionToNextHallway:
 			if (transform.position.x > 91) {
-				MainSceneController.mainSceneController.GoToNextPhase();
+				CharacterControllerV2.SetFloat("inputV", 0);
+				CharacterControllerV2.SetFloat("inputH", 0);
+				if (transitionFlag3 == false) {
+					MainSceneController.mainSceneController.GoToNextPhase();
+					transitionFlag3 = true;
+				}
 			}
 			break;
 		}

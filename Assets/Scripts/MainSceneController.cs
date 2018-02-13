@@ -48,7 +48,7 @@ public class MainSceneController : MonoBehaviour {
 	private Text TutorialButtonTextComponent;
 	private Text DialogueButton1TextComponent, DialogueButton2TextComponent;
 	private Text TraversalDialogueButton1TextComponent, TraversalDialogueButton2TextComponent;
-	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterExitsFire, CharacterScoldsPlayer, FireDialogue1, FireDialogue2, FireDialogue3, FireDialogue4, FireDialogue5, FireDialogue6, TransitionToNextHallway, TilesFallOutOfCeiling};
+	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterExitsFire, CharacterScoldsPlayer, FireDialogue1, FireDialogue2, FireDialogue3, FireDialogue4, FireDialogue5, FireDialogue6, TransitionToNextHallway, TilesFallOutOfCeiling, MemoryMatchMinigame};
 	public static GamePhase gamePhase = GamePhase.StartMenuShowing;
 	public static bool ControlsEnabled = false;
 	private static int ClipboardDoorNumber = 0;
@@ -79,7 +79,8 @@ public class MainSceneController : MonoBehaviour {
 //		gamePhase = GamePhase.Tutorial1;
 //		gamePhase = GamePhase.WaitingForPlayer;
 //		gamePhase = GamePhase.ClipboardAppears;
-		gamePhase = GamePhase.WaitingForPlayerAtFireArea;
+//		gamePhase = GamePhase.WaitingForPlayerAtFireArea;
+		gamePhase = GamePhase.TransitionToNextHallway;
 		GoToNextPhase();
 //		Kira.SetActive(false); Jeff.SetActive(false); ChosenCharacter = Liam;
 	}
@@ -392,10 +393,25 @@ public class MainSceneController : MonoBehaviour {
 			ControlsEnabled = true;
 			break;
 		case GamePhase.TransitionToNextHallway:
+			IntroUI.SetActive(false);
 			gamePhase = GamePhase.TilesFallOutOfCeiling;
 			// Wait for Player to enter medical room
+			ChosenCharacter.transform.position = new Vector3(91.74f, -0.23f, 31.92f);
+			ChosenCharacter.transform.rotation = Quaternion.Euler(0, 103.7f, 0);
+			Camera.main.transform.position = new Vector3(90.34f, 1.24f, 31.157f);
+			Camera.main.transform.rotation = Quaternion.Euler(15.328f, 90, 0);
+			Camera.main.transform.parent = ChosenCharacter.transform;
+			ControlsEnabled = false;
 			break;
 		case GamePhase.TilesFallOutOfCeiling:
+			gamePhase = GamePhase.MemoryMatchMinigame;
+			ControlsEnabled = false;
+			Camera.main.transform.parent = null;
+			Camera.main.transform.position = new Vector3(95.91f, 4.57f, 31.157f);
+			Camera.main.transform.rotation = Quaternion.Euler(90, 90, 0);
+			break;
+		case GamePhase.MemoryMatchMinigame:
+			
 			break;
 		}
 		Debug.Log(gamePhase);
