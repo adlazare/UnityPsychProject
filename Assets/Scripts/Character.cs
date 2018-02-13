@@ -15,8 +15,9 @@ public class Character : MonoBehaviour {
 	public static bool transitionFlag = false;
 	public static bool transitionFlag2 = false;
 	public static bool transitionFlag3 = false;
-
-
+	public static bool transitionFlag4 = false;
+	public static bool transitionFlag5 = false;
+	public static bool transitionFlag6 = false;
 
 	// Use this for initialization
 	void Start () {
@@ -130,6 +131,30 @@ public class Character : MonoBehaviour {
 				}
 			}
 			break;
+		case MainSceneController.GamePhase.WaitForPlayerToEnterElevator:
+			if (transform.position.x > 100.5f) {
+				CharacterControllerV2.SetFloat("inputV", 0);
+				CharacterControllerV2.SetFloat("inputH", 0);
+				if (transitionFlag4 == false) {
+					MainSceneController.mainSceneController.GoToNextPhase();
+					transitionFlag4 = true;
+				}
+			}
+			break;
+		case MainSceneController.GamePhase.EntranceToEndRoom:
+			if (transform.position.x < 82f) {
+				CharacterControllerV2.SetFloat("inputV", 0);
+				CharacterControllerV2.SetFloat("inputH", 0);
+				if (transitionFlag6 == false) {
+					MainSceneController.mainSceneController.GoToNextPhase();
+					transitionFlag6 = true;
+				}
+			}
+			break;
+		case MainSceneController.GamePhase.MemoryMatchDialogue1:
+			CharacterControllerV2.SetFloat("inputV", 0);
+			CharacterControllerV2.SetFloat("inputH", 0);
+			break;
 		}
 
 
@@ -143,11 +168,16 @@ public class Character : MonoBehaviour {
 			CharacterControllerV2.SetFloat("inputH", h);
 			CharacterControllerV2.SetFloat("inputV", v);
 		}
+
+//		if (MainSceneController.ControlsEnabled == false) {
+//			CharacterControllerV2.SetFloat("inputH", 0);
+//			CharacterControllerV2.SetFloat("inputV", 0);
+//		}
 	}
 
 	void OnTriggerEnter (Collider Other) {
 		// Using 'DoorTriggered' flag to only run this code once - otherwise the trigger will register 4 times
-		if (!DoorTriggered) {
+		if (!DoorTriggered && Other.gameObject.name != "MedKit") {
 			Debug.Log("Entered trigger");
 			Debug.Log(Other.gameObject);
 			if (Other.gameObject.name == "MinigameDoorParent1") {SelectedDoor = 1;}
@@ -156,6 +186,12 @@ public class Character : MonoBehaviour {
 			Debug.Log(SelectedDoor);
 			MainSceneController.mainSceneController.GoToNextPhase();
 			DoorTriggered = true;
+		}
+		if (Other.gameObject.name == "MedKit" && transitionFlag5 == false) {
+			transitionFlag5 = true;
+			Debug.Log("GoToNextPhase() Triggered!");
+			MainSceneController.mainSceneController.MedKit.SetActive(false);
+			MainSceneController.mainSceneController.GoToNextPhase();
 		}
 	}
 

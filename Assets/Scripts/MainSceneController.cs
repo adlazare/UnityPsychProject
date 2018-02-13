@@ -11,6 +11,7 @@ public class MainSceneController : MonoBehaviour {
 	private GameObject ChosenCharacter;
 	public GameObject SlidingTile;
 	public GameObject GOClipboard;
+	public GameObject EventSystem;
 	private Clipboard ClipboardScript;
 	public GameObject BackWall;
 	public GameObject MinigameDoor1;
@@ -31,28 +32,38 @@ public class MainSceneController : MonoBehaviour {
 	public GameObject FireAreaTransitionWall;
 	public GameObject GuardRail;
 	public GameObject SlidingStairway;
+	public GameObject MedKit;
+	public GameObject MemoryMatchSlidingWallLeft, MemoryMatchSlidingWallRight;
+	public GameObject Elevator, ElevatorDoorLeft, ElevatorDoorRight;
+	public GameObject EndRoomRightWall;
 	private Rigidbody ClipboardRigidBody;
 	private Rigidbody MinigameDoorsRigidBody;
 	public GameObject IntroUI;
 	public GameObject TutorialUI;
+	public GameObject TutorialAngryUI;
 	public GameObject DialogueUI;
 	public GameObject TraversalDialogueUI;
 	public GameObject TutorialText;
+	public GameObject TutorialAngryText;
 	public GameObject DialogueText;
 	public GameObject TraversalDialogueText;
 	public GameObject TutorialButtonText;
+	public GameObject TutorialAngryButtonText;
 	public GameObject DialogueButton1Text, DialogueButton2Text;
 	public GameObject TraversalDialogueButton1Text, TraversalDialogueButton2Text;
 	public GameObject DialogueButton1, DialogueButton2;
 	private Text TutorialTextComponent;
+	private Text TutorialAngryTextComponent;
 	private Text DialogueTextComponent;
 	private Text TraversalDialogueTextComponent;
 	private Text TutorialButtonTextComponent;
+	private Text TutorialAngryButtonTextComponent;
 	private Text DialogueButton1TextComponent, DialogueButton2TextComponent;
 	private Text TraversalDialogueButton1TextComponent, TraversalDialogueButton2TextComponent;
-	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterExitsFire, CharacterScoldsPlayer, FireDialogue1, FireDialogue2, FireDialogue3, FireDialogue4, FireDialogue5, FireDialogue6, TransitionToNextHallway, TilesFallOutOfCeiling, MemoryMatchMinigame, PlayerGetsFirstAidKit};
+	public enum GamePhase {StartMenuShowing, WalkingIntoRoom, TurnLeft, Tutorial1, Tutorial1Walking, Dialogue1, Dialogue2, Dialogue3, Dialogue4, ClipboardFalling, Dialogue5, HallwayChase, WaitingForPlayer, ClipboardHopToDoor, ThreeDoorShuffle, PlayerChoosesDoor, ClipboardAppears, ConcealedDoorsOpenAndClipboardRuns, ClipboardHeadingToRiver, WaitingForPlayerAtRiverBank, ClipboardSwimsAcrossRiver, RiverMinigameSetup, RiverCrossing, ClipboardRunsToFireMinigame, WaitingForPlayerAtFireArea, DialogueInterruptedByFireWall, StairsAppear, StairDialogue1, StairDialogue2, StairDialogue3, CharacterOnStairs, WaitForPlayerToPushSpace, CharacterFallsIntoFire, CharacterExitsFire, CharacterScoldsPlayer, FireDialogue1, FireDialogue2, FireDialogue3, FireDialogue4, FireDialogue5, FireDialogue6, TransitionToNextHallway, TilesFallOutOfCeiling, MemoryMatchMinigame, PlayerGetsFirstAidKit, MemoryMatchDialogue1, MemoryMatchDialogue2, ElevatorTransition, WaitForPlayerToEnterElevator, BeginElevatorRide, ElevatorDialogue1, ElevatorDialogue2, CheckWhichButtonSelected, EntranceToEndRoom, LetTheHackingBegin};
 	public static GamePhase gamePhase = GamePhase.StartMenuShowing;
 	public static bool ControlsEnabled = false;
+	public static string SelectedButton = "";
 	private static int ClipboardDoorNumber = 0;
 
 
@@ -60,9 +71,11 @@ public class MainSceneController : MonoBehaviour {
 	void Start () {
 		mainSceneController = this;
 		TutorialTextComponent = TutorialText.GetComponent<Text>();
+		TutorialAngryTextComponent = TutorialAngryText.GetComponent<Text>();
 		DialogueTextComponent = DialogueText.GetComponent<Text>();
 		TraversalDialogueTextComponent = TraversalDialogueText.GetComponent<Text>();
 		TutorialButtonTextComponent = TutorialButtonText.GetComponent<Text>();
+		TutorialAngryButtonTextComponent = TutorialAngryButtonText.GetComponent<Text>();
 		DialogueButton1TextComponent = DialogueButton1Text.GetComponent<Text>();
 		DialogueButton2TextComponent = DialogueButton2Text.GetComponent<Text>();
 		TraversalDialogueButton1TextComponent = TraversalDialogueButton1Text.GetComponent<Text>();
@@ -83,6 +96,8 @@ public class MainSceneController : MonoBehaviour {
 //		gamePhase = GamePhase.ClipboardAppears;
 //		gamePhase = GamePhase.WaitingForPlayerAtFireArea;
 		gamePhase = GamePhase.TransitionToNextHallway;
+//		gamePhase = GamePhase.WaitForPlayerToEnterElevator;
+//		gamePhase = GamePhase.EntranceToEndRoom;
 		GoToNextPhase();
 //		Kira.SetActive(false); Jeff.SetActive(false); ChosenCharacter = Liam;
 	}
@@ -123,7 +138,7 @@ public class MainSceneController : MonoBehaviour {
 		case GamePhase.Tutorial1Walking:
 			gamePhase = GamePhase.Dialogue1;
 			ControlsEnabled = false;
-			TutorialUI.SetActive(true);
+			TutorialUI.SetActive(false);
 			// Warp the character to center
 			ChosenCharacter.transform.position = new Vector3(0,ChosenCharacter.transform.position.y, 0);
 			ChosenCharacter.transform.rotation = Quaternion.Euler(0, 180, 0);
@@ -423,14 +438,107 @@ public class MainSceneController : MonoBehaviour {
 			ControlsEnabled = true;
 			break;
 		case GamePhase.PlayerGetsFirstAidKit:
-
+			gamePhase = GamePhase.MemoryMatchDialogue1;
+			ControlsEnabled = false;
+			DialogueUI.SetActive(true);
+			DialogueTextComponent.text = "...";
+			DialogueButton1TextComponent.text = "Feeling Better?";
+			DialogueButton2TextComponent.text = "All fixed up?";
+			break;
+		case GamePhase.MemoryMatchDialogue1:
+			gamePhase = GamePhase.MemoryMatchDialogue2;
+			DialogueUI.SetActive(true);
+			DialogueTextComponent.text = "Much better! Thanks!";
+			DialogueButton1TextComponent.text = "I got your back.";
+			DialogueButton2TextComponent.text = "Anytime.";
+			break;
+		case GamePhase.MemoryMatchDialogue2:
+			gamePhase = GamePhase.ElevatorTransition;
+			ControlsEnabled = true;
+			DialogueUI.SetActive(false);
+			StartCoroutine(OpenElevator());
+			break;
+		case GamePhase.ElevatorTransition:
+			gamePhase = GamePhase.WaitForPlayerToEnterElevator;
+			// Waiting for player to walk into the elevator
+			break;
+		case GamePhase.WaitForPlayerToEnterElevator:
+			gamePhase = GamePhase.ElevatorDialogue1;
+			ControlsEnabled = false;
+			Camera.main.transform.parent = ChosenCharacter.transform;
+			ChosenCharacter.transform.position = new Vector3(101.53f, -1.744f, 31.117f);
+			ChosenCharacter.transform.rotation = Quaternion.Euler(0, 270, 0);
+			Camera.main.transform.position = new Vector3(102.31f, -0.922f, 31.151f);
+			Camera.main.transform.rotation = Quaternion.Euler(12.135f, -89.64f, -0.05f);
+			// Takes player to End Room
+			StartCoroutine(CloseElevator());
+			// Display Dialogue
+			SelectedButton = "";
+			StartCoroutine(ElevatorDialogue1());
+			break;
+		case GamePhase.ElevatorDialogue1:
+			gamePhase = GamePhase.ElevatorDialogue2;
+			SelectedButton = "";
+			DialogueUI.SetActive(true);
+			DialogueTextComponent.text = "This honestly isn't worth the $15 and free lunch. Will you help me get out of here?";
+			DialogueButton1TextComponent.text = "Yeah, definitely.";
+			DialogueButton2TextComponent.text = "No, let's finish this.";
+			break;
+		case GamePhase.ElevatorDialogue2:
+			gamePhase = GamePhase.CheckWhichButtonSelected;
+			if (SelectedButton == "DialogueButton1") {
+				Debug.Log("Button 1 selected");
+				DialogueUI.SetActive(false);
+				GoToNextPhase();
+			}
+			else if (SelectedButton == "DialogueButton2"){
+				Debug.Log("Button 2 selected");
+				gamePhase = GamePhase.ElevatorDialogue2;
+			}
+			break;
+		case GamePhase.CheckWhichButtonSelected:
+			gamePhase = GamePhase.BeginElevatorRide;
+			GoToNextPhase();
+			break;
+		case GamePhase.BeginElevatorRide:
+			DialogueUI.SetActive(false);
+			gamePhase = GamePhase.EntranceToEndRoom;
+			ControlsEnabled = true;
+			break;
+		case GamePhase.EntranceToEndRoom:
+			IntroUI.SetActive(false);
+			gamePhase = GamePhase.LetTheHackingBegin;
+			EndRoomRightWall.SetActive(false);
+			ControlsEnabled = false;
+			Camera.main.transform.parent = null;
+			ChosenCharacter.transform.position = new Vector3(81.57f, -11.77f, 31.1f);
+			ChosenCharacter.transform.rotation = Quaternion.Euler(0, 270, 0);
+			Camera.main.transform.position = new Vector3(81.93f, -10.85f, 33.52f);
+			Camera.main.transform.rotation = Quaternion.Euler(0, 153.3f, 0);
+			TutorialAngryUI.SetActive(true);
+			TutorialAngryTextComponent.text = "What are you doing...";
+			TutorialAngryButtonTextComponent.text = "Um..";
+			break;
+		case GamePhase.LetTheHackingBegin:
 			break;
 		}
 		Debug.Log(gamePhase);
 	}
 
-	public void TraversalDialogueUIClose() {
+	public void TraversalDialogueUIClose () {
 		TraversalDialogueUI.SetActive(false);
+	}
+
+	public void DialogueButton1Clicked () {
+//		Debug.Log("Button 1 Selected!");
+		SelectedButton = "DialogueButton1";
+		GoToNextPhase();
+	}
+
+	public void DialogueButton2Clicked () {
+//		Debug.Log("Button 2 Selected!");
+		SelectedButton = "DialogueButton2";
+		GoToNextPhase();
 	}
 
 	private IEnumerator WaitForPlayerToWalk () {
@@ -760,7 +868,6 @@ public class MainSceneController : MonoBehaviour {
 			GuardRail.transform.position = GuardRail.transform.position + new Vector3(0, -0.05f, 0);
 			yield return new WaitForSeconds(0.016f);
 		}
-		yield return new WaitForSeconds(1f);
 		Vector3 StartPosition = SlidingStairway.transform.position;
 		Vector3 EndPosition = new Vector3(94.048f, -1.22f, 31.17f);
 		for (float f = 0f; f < 1f; f += 0.05f){
@@ -769,5 +876,77 @@ public class MainSceneController : MonoBehaviour {
 		}
 		SlidingStairway.transform.position = EndPosition;
 		yield return new WaitForSeconds(2f);
+	}
+
+	private IEnumerator OpenElevator () {
+		Vector3 LeftDoorStartPosition = MemoryMatchSlidingWallLeft.transform.position;
+		Vector3 LeftDoorEndPosition = new Vector3(99.36f, -1.33f, 34.17f);
+		Vector3 RightDoorStartPosition = MemoryMatchSlidingWallRight.transform.position;
+		Vector3 RightDoorEndPosition = new Vector3(99.36f, -1.33f, 28.011f);
+		for (float f = 0f; f < 1f; f += 0.05f){
+			MemoryMatchSlidingWallLeft.transform.position = Vector3.Lerp(LeftDoorStartPosition, LeftDoorEndPosition, f);
+			MemoryMatchSlidingWallRight.transform.position = Vector3.Lerp(RightDoorStartPosition, RightDoorEndPosition, f);
+			yield return new WaitForSeconds(0.016f);
+		}
+		MemoryMatchSlidingWallLeft.transform.position = LeftDoorEndPosition;
+		MemoryMatchSlidingWallRight.transform.position = RightDoorEndPosition;
+		yield return new WaitForSeconds(1f);
+		Vector3 LeftElevatorDoorStartPosition = ElevatorDoorLeft.transform.localPosition;
+		Vector3 LeftElevatorDoorEndPosition = new Vector3(-1.264f, 0.0175f, 1.488f);
+		Vector3 RightElevatorDoorStartPosition = ElevatorDoorRight.transform.localPosition;
+		Vector3 RightElevatorDoorEndPosition = new Vector3(-1.264f, 0.0175f, -1.46f);
+		for (float f = 0f; f < 1f; f += 0.05f){
+			ElevatorDoorLeft.transform.localPosition = Vector3.Lerp(LeftElevatorDoorStartPosition, LeftElevatorDoorEndPosition, f);
+			ElevatorDoorRight.transform.localPosition = Vector3.Lerp(RightElevatorDoorStartPosition, RightElevatorDoorEndPosition, f);
+			yield return new WaitForSeconds(0.016f);
+		}
+		ElevatorDoorLeft.transform.localPosition = LeftElevatorDoorEndPosition;
+		ElevatorDoorRight.transform.localPosition = RightElevatorDoorEndPosition;
+		GoToNextPhase();
+	}
+
+	private IEnumerator CloseElevator () {
+		yield return new WaitForSeconds(1f);
+		Vector3 LeftElevatorDoorStartPosition = ElevatorDoorLeft.transform.localPosition;
+		Vector3 LeftElevatorDoorEndPosition = new Vector3(-1.264f, 0.0175f, 0.55f);
+		Vector3 RightElevatorDoorStartPosition = ElevatorDoorRight.transform.localPosition;
+		Vector3 RightElevatorDoorEndPosition = new Vector3(-1.264f, 0.0175f, -0.55f);
+		for (float f = 0f; f < 1f; f += 0.05f){
+			ElevatorDoorLeft.transform.localPosition = Vector3.Lerp(LeftElevatorDoorStartPosition, LeftElevatorDoorEndPosition, f);
+			ElevatorDoorRight.transform.localPosition = Vector3.Lerp(RightElevatorDoorStartPosition, RightElevatorDoorEndPosition, f);
+			yield return new WaitForSeconds(0.016f);
+		}
+		ElevatorDoorLeft.transform.localPosition = LeftElevatorDoorEndPosition;
+		ElevatorDoorRight.transform.localPosition = RightElevatorDoorEndPosition;
+		yield return new WaitForSeconds(2f);
+		Vector3 ElevatorStartPosition = Elevator.transform.position;
+		Vector3 ElevatorEndPosition = new Vector3(100.9355f, -11.15f, 31.08f);
+		for (float f = 0f; f < 1f; f += 0.0025f){
+			Elevator.transform.position = Vector3.Lerp(ElevatorStartPosition, ElevatorEndPosition, f);
+			yield return new WaitForSeconds(0.016f);
+		}
+		Elevator.transform.position = ElevatorEndPosition;
+		yield return new WaitForSeconds(2f);
+		// Open Elevator once we have reached the End Room
+		Vector3 LeftElevatorDoorStartPosition2 = ElevatorDoorLeft.transform.localPosition;
+		Vector3 LeftElevatorDoorEndPosition2 = new Vector3(-1.264f, 0.0175f, 1.488f);
+		Vector3 RightElevatorDoorStartPosition2 = ElevatorDoorRight.transform.localPosition;
+		Vector3 RightElevatorDoorEndPosition2 = new Vector3(-1.264f, 0.0175f, -1.46f);
+		for (float f = 0f; f < 1f; f += 0.05f){
+			ElevatorDoorLeft.transform.localPosition = Vector3.Lerp(LeftElevatorDoorStartPosition2, LeftElevatorDoorEndPosition2, f);
+			ElevatorDoorRight.transform.localPosition = Vector3.Lerp(RightElevatorDoorStartPosition2, RightElevatorDoorEndPosition2, f);
+			yield return new WaitForSeconds(0.016f);
+		}
+		ElevatorDoorLeft.transform.localPosition = LeftElevatorDoorEndPosition2;
+		ElevatorDoorRight.transform.localPosition = RightElevatorDoorEndPosition2;
+//		GoToNextPhase();
+	}
+
+	private IEnumerator ElevatorDialogue1 () {
+		yield return new WaitForSeconds(5f);
+		DialogueUI.SetActive(true);
+		DialogueTextComponent.text = "Hey Labrat?";
+		DialogueButton1TextComponent.text = "Yeah Guinea Pig?";
+		DialogueButton2TextComponent.text = "What?";
 	}
 }

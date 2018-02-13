@@ -46,7 +46,7 @@ public class MemoryMatchTile : MonoBehaviour {
 			Tile1ParticleSystemName = transform.GetChild(1).name;
 			StartCoroutine(FlipTile());
 		}
-		else if(ClickNum == 2) {
+		else if(ClickNum == 2 && Tile1Name != name) {
 			ClickNum = 1;
 			Tile2Type = transform.GetChild(0).name;
 			Tile2Name = name;
@@ -121,6 +121,7 @@ public class MemoryMatchTile : MonoBehaviour {
 
 		if (MatchCount == 6) {
 			MainSceneController.mainSceneController.GoToNextPhase();
+			MainSceneController.mainSceneController.MedKit.SetActive(true);
 		}
 	}
 }
